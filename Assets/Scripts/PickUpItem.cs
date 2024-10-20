@@ -6,6 +6,8 @@ using static UnityEditor.Progress;
 
 public class PickUpItem : MonoBehaviour
 {
+
+
     public List<Color> items = new List<Color>();
     private int activeItemIndex = -1;
 

@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class MoveShip : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 100f;
-    [SerializeField] private float cooldownTime = 1f;
+    [SerializeField] public float moveSpeed = 5f;
+    [SerializeField] public float rotationSpeed = 100f;
+    [SerializeField] public float cooldownTime = 1f;
 
     [SerializeField] private UI uiManager;
     [SerializeField] private PickUpItem itemManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         uiManager.ShowIntroduction();
     }
 
-    // Update is called once per frame
     void Update()
     {
         HandleInput();
