@@ -1,26 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
+using System;
+
 
 public class PickUpItem : MonoBehaviour
 {
-
+    [SerializeField] private TMP_Text messageField;
 
     public List<Color> items = new List<Color>();
     private int activeItemIndex = -1;
 
     [SerializeField] private Image itemImageHolder;
+
+    public static event Action<Color> OnUseItem; 
     void Start()
     {
-        
+      
     }
 
-    
+
+
+
     void Update()
     {
-
+        CycleItems();
+        UseItem();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,31 +53,70 @@ public class PickUpItem : MonoBehaviour
 
     public void CycleItems() 
     {
-        if (items.Count > 0)
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            activeItemIndex = (activeItemIndex + 1) % items.Count;
-            UpdateItemImage();
-        }
-        else
-        {
-            ResetItemImage();
+            if (items.Count > 0)
+            {
+                activeItemIndex = (activeItemIndex + 1) % items.Count;
+                UpdateItemImage();
+            }
+            else
+            {
+                ResetItemImage();
+            }
         }
     }
 
-    public Color UseItem()
+    public void UseItem()
     {
-        if (activeItemIndex != -1 && items.Count > 0)
+        if (Input.GetKeyDown(KeyCode.E) && activeItemIndex != -1 && items.Count > 0)
         {
             Color usedItem = items[activeItemIndex];
-            items.RemoveAt(activeItemIndex);
-            activeItemIndex = items.Count > 0 ? Mathf.Min(activeItemIndex, items.Count - 1) : -1;
-            UpdateItemImage();
-            return usedItem;
-        }
-        return Color.clear;
-    }
 
-        private void UpdateItemImage()
+            if (items.Count > 0 && activeItemIndex != -1)
+            {
+                if (usedItem == Color.blue)
+                {
+                   OnUseItem?.Invoke(usedItem);
+
+                }
+                else if (usedItem == Color.red)
+                {
+                    OnUseItem?.Invoke(usedItem);
+
+                }
+                else if (usedItem == Color.green)
+                {
+                    OnUseItem?.Invoke(usedItem);
+
+                }
+
+            }
+           
+            items.RemoveAt(activeItemIndex);
+
+            activeItemIndex = items.Count > 0 ? Mathf.Min(activeItemIndex, items.Count - 1) : -1; //ga dit even uitzoeken ternary operators
+
+            if (activeItemIndex != -1)
+            {
+                UpdateItemImage();
+            }
+            else {
+                ResetItemImage();
+            }
+           
+
+
+
+           
+
+           
+            
+        }
+        //return Color.clear;
+      }
+
+    private void UpdateItemImage()
     {
         if (activeItemIndex != -1)
         {
@@ -83,5 +130,17 @@ public class PickUpItem : MonoBehaviour
         itemImageHolder.color = Color.white;
         itemImageHolder.enabled = false;
         activeItemIndex = -1;
+    }
+
+    private void ShowMessage(string message)
+    {
+        StartCoroutine(ShowMessageCoroutine(message));
+    }
+
+    private IEnumerator ShowMessageCoroutine(string message)
+    {
+        messageField.text = message;
+        yield return new WaitForSeconds(2);
+        messageField.text = "";
     }
 }

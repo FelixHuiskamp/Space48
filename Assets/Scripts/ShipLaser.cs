@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class ShipLaser : MonoBehaviour
 {
     [SerializeField] private GameObject laserPrefab;
     [SerializeField] private float cooldownTime = 3f;
 
-
-    private float cooldownCounter = 0f;
+    [SerializeField] private float cooldownTimeDecrease = 1f;
+    private float cooldownCounter = 3f;
     void Start()
     {
-        
+        PickUpItem.OnUseItem += PowerUp;
     }
 
     
@@ -36,5 +37,13 @@ public class ShipLaser : MonoBehaviour
         }
 
 
+    }
+
+    private void PowerUp(Color pColor)
+    {
+        if (pColor == Color.red)
+        {
+            cooldownTime -= cooldownTimeDecrease;
+        }
     }
 }
